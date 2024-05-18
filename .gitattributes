@@ -1,0 +1,11 @@
+assets/videos/building_dogaussian_pcl.mov filter=lfs diff=lfs merge=lfs -text
+assets/videos/campus_dogaussian_pcl.mov filter=lfs diff=lfs merge=lfs -text
+assets/videos/residence_dogaussian_pcl.mov filter=lfs diff=lfs merge=lfs -text
+assets/videos/sciart_dogaussian.mov filter=lfs diff=lfs merge=lfs -text
+assets/videos/DoGaussian_demo_final.mp4 filter=lfs diff=lfs merge=lfs -text
+assets/videos/building_dogaussian.mov filter=lfs diff=lfs merge=lfs -text
+assets/videos/campus_dogaussian.mov filter=lfs diff=lfs merge=lfs -text
+assets/videos/residence_dogaussian.mov filter=lfs diff=lfs merge=lfs -text
+assets/videos/rubble_dogaussian.mov filter=lfs diff=lfs merge=lfs -text
+assets/videos/rubble_dogaussian_pcl.mov filter=lfs diff=lfs merge=lfs -text
+assets/videos/sciart_dogaussian_pcl.mov filter=lfs diff=lfs merge=lfs -text
