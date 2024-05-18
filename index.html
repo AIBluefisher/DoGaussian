@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/html"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="DoGaussian: Distributed-Oriented Gaussian Splatting for Large-Scale 3D Reconstruction Via Gaussian Consensus">
+
+        <!--Twitter preview-->
+        <meta name="twitter:card" content="summary_large_image">
+        <meta name="twitter:title" content="DoGaussian: Distributed-Oriented Gaussian Splatting for Large-Scale 3D Reconstruction Via Gaussian Consensus">
+        <meta name="twitter:description" content="NUS&#39; DoGaussian is a distributed method that accelerates 3DGS training with multiple GPU nodes.">
+        <meta name="twitter:image" content="https://aibluefisher.github.io/dogaussian/assets/social_card.png">
+
+        <title>DoGaussian</title>
+
+        <link href="./assets/bootstrap.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="./assets/all.min.css">
+        <link href="./assets/style.css" rel="stylesheet">
+        
+        <link rel="stylesheet" href="./assets/slider.css">
+
+        <link rel="icon" href="./assets/imgs/dog_icon.png">
+    <style type="text/css" abt="234"></style><script>//remove baidu search ad
+var _countAA = 0
+function doBBBd(){}
+doBBBd()
+document.addEventListener('keyup', function(){_countAA-=10;doBBBd()}, false)
+document.addEventListener('click', function(){_countAA-=10;doBBBd()}, false)
+
+</script></head>
+    <body data-new-gr-c-s-check-loaded="14.1173.0" data-gr-ext-installed="">
+
+        <div class="container">
+            <div class="row text-center">
+                <h1 class="mt-3"><img src="./assets/imgs/dog_icon.png" style="height: 50px; width: auto">DoGaussian: Distributed-Oriented Gaussian Splatting </h1>
+                <h3 class="mb-4">for Large-Scale 3D Reconstruction Via Gaussian Consensus</h3>
+            </div>
+            <div class="row text-center">
+                <div class="col-sm-0 col-md-2"></div>
+                <div class="col-sm-12 col-md-8">
+                    <h6>
+                        <a href="https://aibluefisher.github.io/" target="_blank"><nobr>Yu Chen</nobr></a>  
+                        <a href="https://www.comp.nus.edu.sg/~leegh/" target="_blank"><nobr>Gim Hee Lee</nobr></a>
+                    </h6>
+                    National University of Singapore
+                </div>
+                <div class="col-sm-0 col-md-2"></div>
+                <div class="col-md-12 mt-3">
+                    <a href="" class="btn btn-secondary btn-sm" target="_blank"><i class="fa-solid fa-file-pdf"></i>&nbsp;&nbsp;arXiv (soon)</a>
+                    <a href="" target="_blank" class="btn btn-secondary btn-sm"><i class="fa-brands fa-youtube"></i>&nbsp;&nbsp;Video</a>
+                    <a href="https://github.com/aibluefisher/DoGaussian" target="_blank" class="btn btn-secondary btn-sm"><i class="fa-brands fa-github"></i>&nbsp;&nbsp;Code (soon)</a>
+                    <a href="https://aibluefisher.github.io/dogaussian/#citation" class="btn btn-secondary btn-sm"><i class="fa-solid fa-file"></i>&nbsp;&nbsp;BibTeX</a>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-0 col-md-2"></div>
+                <div class="col-sm-12 col-md-8">
+
+                    <video class="w-100 mt-4" autoplay="" loop="" muted="">
+                        <source src="./assets/videos/DoGaussian_demo_final.mp4" type="video/mp4">
+                    </video>
+
+                    <h3 class="mt-3">Abstract</h3>
+                    <hr>
+                    <p>
+                        The recent advances in 3D Gaussian Splatting (3DGS) show promising results on the novel view 
+                        synthesis (NVS) task. With its superior rendering performance and high-fidelity rendering quality, 
+                        3DGS is excelling at its previous NeRF counterparts. The most recent 3DGS method focuses either on 
+                        improving the instability of rendering efficiency or reducing the model size. On the other hand, 
+                        the training efficiency of 3DGS on large-scale scenes has not gained much attention. In this work, 
+                        we propose <b>DoGaussian</b>, a method that trains 3DGS distributedly. Our method first decomposes a scene into 
+                        $K$ blocks and then introduces the Alternating Direction Method of Multipliers (ADMM) into the training 
+                        procedure of 3DGS. During training, our DoGaussian maintains one global 3DGS model on the master node and 
+                        $K$ local 3DGS models on the slave nodes. The $K$ local 3DGS models are dropped after training and we only 
+                        query the global 3DGS model during inference. The training time is reduced by scene decomposition, 
+                        and the training convergence and stability are guaranteed through the consensus on the shared 3D Gaussians. 
+                        Our method accelerates the training of 3DGS by $6+$ times when evaluated on large-scale scenes while 
+                        concurrently achieving state-of-the-art rendering quality.
+                    </p>
+
+
+                    <h3 class="mt-5" id="overview"> Watch a 3-minute overview video</h3>
+                    <hr class="hr">
+                    <video class="w-100 mb-4" controls="" preload="none" poster="assets/overview_video_poster.jpg">
+                        <source src="" type="video/mp4">
+                    </video>
+
+                    <h3 class="mt-5">Watch <b>DoGaussian</b> reconstructed large-scale scenes</h3>
+                    <hr class="hr">
+                    <p>
+                        We visualize the reconstruction results of <b>DoGaussian</b> on the Mill-19 and UrbanScene3D dataset.
+                        The results are recorded on <u>a browser of a MacBook (m1 chip with 8GB memory)</u> with freely moving 
+                        camera trajectories that are highly different from the training views.
+                        <b>Use the controls to switch between scenes.</b>
+                    </p>
+
+                    <div id="DoGaussianResults" class="carousel slide" data-bs-ride="false">
+                        <div class="carousel-indicators">
+                            <button type="button" data-bs-target="#DoGaussianResults" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+                            <button type="button" data-bs-target="#DoGaussianResults" data-bs-slide-to="1" aria-label="Slide 2"></button>
+                            <button type="button" data-bs-target="#DoGaussianResults" data-bs-slide-to="2" aria-label="Slide 3"></button>
+                            <button type="button" data-bs-target="#DoGaussianResults" data-bs-slide-to="3" aria-label="Slide 4"></button>
+                            <button type="button" data-bs-target="#DoGaussianResults" data-bs-slide-to="4" aria-label="Slide 5"></button>
+                        </div>
+                        <div class="carousel-inner">
+                            <div class="carousel-item active">
+                                <video class="w-100" autoplay="" loop="" muted="">
+                                    <source src="./assets/videos/building_dogaussian.mov" type="video/mp4">
+                                </video>
+                                <div class="carousel-caption">
+                                    <h5>Mill19 - Building</h5>
+                                </div>
+                            </div>
+                            <div class="carousel-item">
+                                <video class="w-100" autoplay="" loop="" muted="">
+                                    <source src="./assets/videos/rubble_dogaussian.mov" type="video/mp4">
+                                </video>
+                                <div class="carousel-caption">
+                                    <h5>Mill-19 - Rubble</h5>
+                                </div>
+                            </div>
+                            <div class="carousel-item">
+                                <video class="w-100" autoplay="" loop="" muted="">
+                                    <source src="./assets/videos/campus_dogaussian.mov" type="video/mp4">
+                                </video>
+                                <div class="carousel-caption">
+                                    <h5>UrbanScene3D - Campus</h5>
+                                </div>
+                            </div>
+                            <div class="carousel-item">
+                                <video class="w-100" autoplay="" loop="" muted="">
+                                    <source src="./assets/videos/sciart_dogaussian.mov" type="video/mp4">
+                                </video>
+                                <div class="carousel-caption">
+                                    <h5>UrbanScene3D - Sci-Art</h5>
+                                </div>
+                            </div>
+                            <div class="carousel-item">
+                                <video class="w-100" autoplay="" loop="" muted="">
+                                    <source src="./assets/videos/residence_dogaussian.mov" type="video/mp4">
+                                </video>
+                                <div class="carousel-caption">
+                                    <h5>UrbanScene3D - Residence</h5>
+                                </div>
+                            </div>
+                        </div>
+                        <button class="carousel-control-prev" type="button" data-bs-target="#DoGaussianResults" data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Previous</span>
+                        </button>
+                        <button class="carousel-control-next" type="button" data-bs-target="#DoGaussianResults" data-bs-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Next</span>
+                        </button>
+                    </div>
+
+                    <h3 class="mt-5">Watch <b>DoGaussian</b> reconstructed 3D Gaussian Primitives</h3>
+                    <hr class="hr">
+                    <p>
+                        We visualize the reconstructed 3D Gaussian primitives of <b>DoGaussian</b> on the Mill-19 and UrbanScene3D dataset.
+                        The results are recorded on <u>a browser of a MacBook (m1 chip with 8GB memory)</u> with freely moving 
+                        camera trajectories that are highly different from the training views.
+                        <b>Use the controls to switch between scenes.</b>
+                    </p>
+
+                    <div id="DoGaussianPclResults" class="carousel slide" data-bs-ride="false">
+                        <div class="carousel-indicators">
+                            <button type="button" data-bs-target="#DoGaussianPclResults" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+                            <button type="button" data-bs-target="#DoGaussianPclResults" data-bs-slide-to="1" aria-label="Slide 2"></button>
+                            <button type="button" data-bs-target="#DoGaussianPclResults" data-bs-slide-to="2" aria-label="Slide 3"></button>
+                            <button type="button" data-bs-target="#DoGaussianPclResults" data-bs-slide-to="3" aria-label="Slide 4"></button>
+                            <button type="button" data-bs-target="#DoGaussianPclResults" data-bs-slide-to="4" aria-label="Slide 5"></button>
+                        </div>
+                        <div class="carousel-inner">
+                            <div class="carousel-item active">
+                                <video class="w-100" autoplay="" loop="" muted="">
+                                    <source src="./assets/videos/building_dogaussian_pcl.mov" type="video/mp4">
+                                </video>
+                                <div class="carousel-caption">
+                                    <h5>Mill19 - Building</h5>
+                                </div>
+                            </div>
+                            <div class="carousel-item">
+                                <video class="w-100" autoplay="" loop="" muted="">
+                                    <source src="./assets/videos/rubble_dogaussian_pcl.mov" type="video/mp4">
+                                </video>
+                                <div class="carousel-caption">
+                                    <h5>Mill-19 - Rubble</h5>
+                                </div>
+                            </div>
+                            <div class="carousel-item">
+                                <video class="w-100" autoplay="" loop="" muted="">
+                                    <source src="./assets/videos/campus_dogaussian_pcl.mov" type="video/mp4">
+                                </video>
+                                <div class="carousel-caption">
+                                    <h5>UrbanScene3D - Campus</h5>
+                                </div>
+                            </div>
+                            <div class="carousel-item">
+                                <video class="w-100" autoplay="" loop="" muted="">
+                                    <source src="./assets/videos/sciart_dogaussian_pcl.mov" type="video/mp4">
+                                </video>
+                                <div class="carousel-caption">
+                                    <h5>UrbanScene3D - Sci-Art</h5>
+                                </div>
+                            </div>
+                            <div class="carousel-item">
+                                <video class="w-100" autoplay="" loop="" muted="">
+                                    <source src="./assets/videos/residence_dogaussian_pcl.mov" type="video/mp4">
+                                </video>
+                                <div class="carousel-caption">
+                                    <h5>UrbanScene3D - Residence</h5>
+                                </div>
+                            </div>
+                        </div>
+                        <button class="carousel-control-prev" type="button" data-bs-target="#DoGaussianPclResults" data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Previous</span>
+                        </button>
+                        <button class="carousel-control-next" type="button" data-bs-target="#DoGaussianPclResults" data-bs-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Next</span>
+                        </button>
+                    </div>
+
+                    <h3 class="mt-5">Training Pipeline of <b>DoGaussian</b></h3>
+                    <hr class="hr">
+
+                    <img class="w-100 mb-3" src="./assets/imgs/dogaussian_pipeline.png" alt="">
+                    <p>
+                        (1) We first split the scene into K blocks with similar sizes. Each block is extended to a larger size 
+                        to construct overlapping parts.
+                        <br>
+                        (2) Subsequently, we assign views and points into different blocks. The shared local 3D Gaussians 
+                        (connected by solid lines in the figure) are a copy the the global 3D Gaussians.
+                        <br>
+                        (3) The local 3D Gaussians are then collected and averaged to the global 3D Gaussians in each consensus 
+                        step, and the global 3D Gaussians are shared with each block before training all blocks.
+                        <br>
+                        (4) Finally, we use the final global 3D Gaussians to synthesize novel views.
+                    </p>
+
+                    <h3 class="mt-5"><b>DoGaussian</b> on novel view synthesis</h3>
+                    <hr class="hr">
+
+
+
+                    <!-- <div id="DoGaussianSliderResults" class="carousel slide" data-bs-ride="false">
+                        <div class="carousel-indicators">
+                            <button type="button" data-bs-target="#DoGaussianSliderResults" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+                            <button type="button" data-bs-target="#DoGaussianSliderResults" data-bs-slide-to="1" aria-label="Slide 2"></button>
+                            <button type="button" data-bs-target="#DoGaussianSliderResults" data-bs-slide-to="2" aria-label="Slide 3"></button>
+                            <button type="button" data-bs-target="#DoGaussianSliderResults" data-bs-slide-to="3" aria-label="Slide 4"></button>
+                        </div>
+                        <div class="carousel-inner">
+                            <div class="carousel-item active">
+                                <div id="example6" class="bal-container-small">
+                                    <div class="bal-after">
+                                      <img class="d-block" src="./assets/imgs/campus_dogs.png">
+                                      <div class="bal-afterPosition afterLabel" style="z-index:1;">
+                                        Ours
+                                      </div>
+                                    </div>
+                                  
+                                    <div class="bal-before" style="width:6.369426751592357%;">
+                                      <div class="bal-before-inset" style="width: 628px;">
+                                      <img src="./assets/imgs/campus_mega-nerf.png">
+                                        <div class="bal-beforePosition beforeLabel">
+                                          Mega-NeRF [Turki, <i>et.al.</i> 2022]
+                                        </div>
+                                      </div>
+                                    </div>
+                                  
+                                    <div class="bal-handle" style="left:6.369426751592357%;">
+                                      <span class="handle-left-arrow"></span>
+                                      <span class="handle-right-arrow"></span>
+                                    </div>
+                                </div>
+                                <div class="carousel-caption">
+                                    <h5>UrbanScene3D - Campus</h5>
+                                </div>
+                            </div>
+                            <div class="carousel-item">
+                                <div id="example7" class="bal-container-small">
+                                    <div class="bal-after">
+                                      <img src="./assets/imgs/building_dogs.png">
+                                      <div class="bal-afterPosition afterLabel" style="z-index:1;">
+                                        Ours
+                                      </div>
+                                    </div>
+                                  
+                                    <div class="bal-before" style="width:6.369426751592357%;">
+                                      <div class="bal-before-inset" style="width: 628px;">
+                                      <img src="./assets/imgs/building_switch-nerf.png">
+                                        <div class="bal-beforePosition beforeLabel">
+                                          Switch-NeRF [Mi & Xu 2023]
+                                        </div>
+                                      </div>
+                                    </div>
+                                  
+                                    <div class="bal-handle" style="left:6.369426751592357%;">
+                                      <span class="handle-left-arrow"></span>
+                                      <span class="handle-right-arrow"></span>
+                                    </div>
+                                </div>
+                                <div class="carousel-caption">
+                                    <h5>Mill-19 - Building</h5>
+                                </div>
+                            </div>
+                            <div class="carousel-item">
+                                <div id="example8" class="bal-container-small">
+                                    <div class="bal-after">
+                                      <img src="./assets/imgs/rubble_dogs.png">
+                                      <div class="bal-afterPosition afterLabel" style="z-index:1;">
+                                        Ours
+                                      </div>
+                                    </div>
+                                  
+                                    <div class="bal-before" style="width:6.369426751592357%;">
+                                      <div class="bal-before-inset" style="width: 628px;">
+                                      <img src="./assets/imgs/rubble_3dgs.png">
+                                        <div class="bal-beforePosition beforeLabel">
+                                          3DGS [Kerbl, <i>et.al.</i> 2023]
+                                        </div>
+                                      </div>
+                                    </div>
+                                  
+                                    <div class="bal-handle" style="left:6.369426751592357%;">
+                                      <span class=" handle-left-arrow"></span>
+                                      <span class="handle-right-arrow"></span>
+                                    </div>
+                                </div>
+                                <div class="carousel-caption">
+                                    <h5>Mill-19 - Rubble</h5>
+                                </div>
+                            </div>
+                            <div class="carousel-item">
+                                <div id="example9" class="bal-container-small">
+                                    <div class="bal-after">
+                                      <img src="./assets/imgs/sciart_dogs.png">
+                                      <div class="bal-afterPosition afterLabel" style="z-index:1;">
+                                        Ours
+                                      </div>
+                                    </div>
+                                  
+                                    <div class="bal-before" style="width:6.369426751592357%;">
+                                      <div class="bal-before-inset" style="width: 628px;">
+                                      <img src="./assets/imgs/sciart_vastgs.png">
+                                        <div class="bal-beforePosition beforeLabel">
+                                          VastGaussian [Lin, <i>et.al.</i> 2024]
+                                        </div>
+                                      </div>
+                                    </div>
+                                  
+                                    <div class="bal-handle" style="left:6.369426751592357%;">
+                                      <span class=" handle-left-arrow"></span>
+                                      <span class="handle-right-arrow"></span>
+                                    </div>
+                                </div>
+                                <div class="carousel-caption">
+                                    <h5>UrbanScene3D - Sci-Art</h5>
+                                </div>
+                            </div>
+                        </div>
+                        <button class="carousel-control-prev" type="button" data-bs-target="#DoGaussianSliderResults" data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Previous</span>
+                        </button>
+                        <button class="carousel-control-next" type="button" data-bs-target="#DoGaussianSliderResults" data-bs-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Next</span>
+                        </button>
+                    </div> -->
+
+
+                    <div class="row align-items-start">
+                        <div id="example4" class="bal-container-small">
+                            <div class="bal-after">
+                              <img src="./assets/imgs/campus_dogs.png">
+                              <div class="bal-afterPosition afterLabel" style="z-index:1;">
+                                Ours
+                              </div>
+                            </div>
+                          
+                            <div class="bal-before" style="width:6.369426751592357%;">
+                              <div class="bal-before-inset" style="width: 628px;">
+                              <img src="./assets/imgs/campus_mega-nerf.png">
+                                <div class="bal-beforePosition beforeLabel">
+                                  Mega-NeRF [Turki, <i>et.al.</i> 2022]
+                                </div>
+                              </div>
+                            </div>
+                          
+                            <div class="bal-handle" style="left:6.369426751592357%;">
+                              <span class=" handle-left-arrow"></span>
+                              <span class="handle-right-arrow"></span>
+                            </div>
+                        </div>
+                        <hr>
+
+                        <div id="example3" class="bal-container-small">
+                            <div class="bal-after">
+                              <img src="./assets/imgs/building_dogs.png">
+                              <div class="bal-afterPosition afterLabel" style="z-index:1;">
+                                Ours
+                              </div>
+                            </div>
+                          
+                            <div class="bal-before" style="width:6.369426751592357%;">
+                              <div class="bal-before-inset" style="width: 628px;">
+                              <img src="./assets/imgs/building_switch-nerf.png">
+                                <div class="bal-beforePosition beforeLabel">
+                                  Switch-NeRF [Mi & Xu 2023]
+                                </div>
+                              </div>
+                            </div>
+                          
+                            <div class="bal-handle" style="left:6.369426751592357%;">
+                              <span class=" handle-left-arrow"></span>
+                              <span class="handle-right-arrow"></span>
+                            </div>
+                        </div>
+                        <hr>
+                    </div>
+
+                    <div class="row align-items-start">
+                        <div id="example1" class="bal-container-small">
+                            <div class="bal-after">
+                              <img src="./assets/imgs/rubble_dogs.png">
+                              <div class="bal-afterPosition afterLabel" style="z-index:1;">
+                                Ours
+                              </div>
+                            </div>
+                          
+                            <div class="bal-before" style="width:6.369426751592357%;">
+                              <div class="bal-before-inset" style="width: 628px;">
+                              <img src="./assets/imgs/rubble_3dgs.png">
+                                <div class="bal-beforePosition beforeLabel">
+                                  3DGS [Kerbl, <i>et.al.</i> 2023]
+                                </div>
+                              </div>
+                            </div>
+                          
+                            <div class="bal-handle" style="left:6.369426751592357%;">
+                              <span class=" handle-left-arrow"></span>
+                              <span class="handle-right-arrow"></span>
+                            </div>
+                        </div>
+                        <hr>
+
+                        <div id="example2" class="bal-container-small">
+                            <div class="bal-after">
+                              <img src="./assets/imgs/sciart_dogs.png">
+                              <div class="bal-afterPosition afterLabel" style="z-index:1;">
+                                Ours
+                              </div>
+                            </div>
+                          
+                            <div class="bal-before" style="width:6.369426751592357%;">
+                              <div class="bal-before-inset" style="width: 628px;">
+                              <img src="./assets/imgs/sciart_vastgs.png">
+                                <div class="bal-beforePosition beforeLabel">
+                                  VastGaussian [Lin, <i>et.al.</i> 2024]
+                                </div>
+                              </div>
+                            </div>
+                          
+                            <div class="bal-handle" style="left:6.369426751592357%;">
+                              <span class=" handle-left-arrow"></span>
+                              <span class="handle-right-arrow"></span>
+                            </div>
+                        </div>
+                        <hr>
+                    </div>
+
+                    <h3 class="mt-5" id="citation">Please consider citing our paper</h3>
+                    <hr class="hr">
+                    <pre class="w-100 user-select-all font-monospace border border-secondary bg-dark mb-5 p-2">@inproceedings{yuchen2024dogaussian,
+    title={DoGaussian: Distributed-Oriented Gaussian Splatting for Large-Scale 3D Reconstruction Via Gaussian Consensus},
+    author={Yu Chen, Gim Hee Lee},
+    booktitle={arXiv},
+    year={2024},
+}</pre>
+
+                </div>
+                <div class="col-sm-0 col-md-2"></div>
+
+
+
+            </div>
+        </div>
+
+        <script src="./assets/bootstrap.bundle.min.js"></script>
+        <script src="https://kit.fontawesome.com/746ee6bfa4.js"></script>
+
+        <script src="./assets/slider.js"></script>
+        <script>
+            new BeforeAfter({
+                id: '#example1'
+            });
+            new BeforeAfter({
+                id: '#example2'
+            });
+            new BeforeAfter({
+                id: '#example3'
+            });
+            new BeforeAfter({
+                id: '#example4'
+            });
+            new BeforeAfter({
+                id: '#example6'
+            });
+            new BeforeAfter({
+                id: '#example7'
+            });
+            new BeforeAfter({
+                id: '#example8'
+            });
+            new BeforeAfter({
+                id: '#example9'
+            });
+        
+        </script>
+
+        <script>
+            window.addEventListener('load', videoScroll);
+            window.addEventListener('scroll', videoScroll);
+
+            function videoScroll() {
+
+                if ( document.querySelectorAll('video[autoplay]').length > 0) {
+
+                    var windowHeight = window.innerHeight,
+                    videoEl = document.querySelectorAll('video[autoplay]');
+
+                    for (var i = 0; i < videoEl.length; i++) {
+
+                        var thisVideoEl = videoEl[i],
+                            videoHeight = thisVideoEl.clientHeight,
+                            videoClientRect = thisVideoEl.getBoundingClientRect().top;
+
+                        if ( (thisVideoEl.parentNode.classList.contains('carousel-item') && thisVideoEl.parentNode.classList.contains('active')) || (thisVideoEl.parentNode.nodeName === 'DIV' && !thisVideoEl.parentNode.classList.contains('carousel-item') )) {
+                            if ( videoClientRect <= ( (windowHeight) - (videoHeight*.8) ) && videoClientRect >= ( 0 - ( videoHeight*.2 ) ) ) {
+                                thisVideoEl.play();
+                            } else {
+                                thisVideoEl.pause();
+                            }
+                        }
+                    }
+                }
+            }
+        </script>
+    
+</body><grammarly-desktop-integration data-grammarly-shadow-root="true"><template shadowrootmode="open"><style>
+      div.grammarly-desktop-integration {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+        -moz-user-select: none;
+        -webkit-user-select: none;
+        -ms-user-select:none;
+        user-select:none;
+      }
+
+      div.grammarly-desktop-integration:before {
+        content: attr(data-content);
+      }
+    </style><div aria-label="grammarly-integration" role="group" tabindex="-1" class="grammarly-desktop-integration" data-content="{&quot;mode&quot;:&quot;full&quot;,&quot;isActive&quot;:true,&quot;isUserDisabled&quot;:false}"></div></template></grammarly-desktop-integration></html>
