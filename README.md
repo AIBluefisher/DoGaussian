@@ -1,6 +1,5 @@
-# DoGaussian
+# <img src="./assets/imgs/dog_icon.png" style="width:50px;height:auto"> DoGaussian
 
-<img src="./assets/imgs/dog_icon.png" style="width:30px;height:auto">
 <b>DoGaussian</b>: Distributed-Oriented Gaussian Splatting for Large-Scale 3D Reconstruction Via Gaussian Consensus 
 
 [[Project Page](https://aibluefisher.github.io/DoGaussian) | [arXiv](https://arxiv.org/abs/2405.13943)]
