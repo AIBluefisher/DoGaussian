@@ -11,6 +11,15 @@ Our method accelerates the training of 3DGS by 6+ times when evaluated on large-
 <img src="./assets/imgs/dogaussian_pcl.gif" style="width:480px;height:auto" />
 <img src="./assets/imgs/dogaussian.gif" style="width:480px;height:auto" />
 
+## 2. TODO & Roadmap
+
+- [ ] Release evaluation code
+- [ ] Release pre-trained models on `Mill19`, `UrbanScene3D`, and `MatrixCity`
+- [ ] Release web-viewer.
+- [ ] Release training code
+- [ ] Test on street-view scenes
+- [ ] Support distributed training of `Scaffold-GS` and `Octree-GS`
+
 ## Cite
 
 If you find this project useful for your research, please consider citing our paper:
@@ -22,4 +31,3 @@ If you find this project useful for your research, please consider citing our pa
     year={2024},
 }
 ```
-
