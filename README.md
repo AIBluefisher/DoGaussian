@@ -2,7 +2,7 @@
 
 <b>DoGaussian</b>: Distributed-Oriented Gaussian Splatting for Large-Scale 3D Reconstruction Via Gaussian Consensus 
 
-[[Project Page](https://aibluefisher.github.io/DoGaussian) | [arXiv](https://arxiv.org/abs/2405.13943)]
+[[Project Page](https://aibluefisher.github.io/DoGaussian) | [arXiv](https://arxiv.org/abs/2405.13943)] (**NeurIPS 2024**)
 
 ## 1. Introduction
 
