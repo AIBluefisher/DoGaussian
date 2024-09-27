@@ -20,6 +20,17 @@ Our method accelerates the training of 3DGS by 6+ times when evaluated on large-
 - [ ] Test on street-view scenes
 - [ ] Support distributed training of `Scaffold-GS` and `Octree-GS`
 
+## 3. Train & Test
+
+### Visualize scene splitting
+
+Please check and compile [my modification of COLMAP](https://github.com/AIBluefisher/colmap). After installation, launch COLMAP's GUI. I extended the original model files of COLMAP with an additional `cluster.txt` file, where each line of the file follows the format: [image_id, cluster_id]. When COLMAP's GUI find this file, it will render each image with its color corresponds to its cluster ID. Below are some examples of scene splitting:
+
+![sci-art_blocks_2x4_cameras](https://github.com/user-attachments/assets/218ff44e-0f9a-43ab-bb72-99421f5702a4)
+
+![campus_blocks_2x4_cameras](https://github.com/user-attachments/assets/dea576c7-a480-4c12-886e-46113e08465b)
+
+
 ## Cite
 
 If you find this project useful for your research, please consider citing our paper:
